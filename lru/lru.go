@@ -8,7 +8,7 @@ type Value interface {
 	Len() int
 }
 
-type node struct {
+type Node struct {
 	key   string
 	value Value
 }
@@ -34,7 +34,7 @@ func New(capacity int64, OnEvicted func(string, Value)) *Cache {
 func (this *Cache) Find(key string) (value Value, ok bool) {
 	if ele, ok := this.hashmap[key]; ok {
 		this.ll.MoveToFront(ele)
-		v := ele.Value.(*node)
+		v := ele.Value.(*Node)
 		return v.value, true
 	}
 	return
@@ -44,11 +44,11 @@ func (this *Cache) Put(key string, value Value) {
 	ncap := int64(value.Len()) + int64(len(key))
 	if ele, ok := this.hashmap[key]; ok {
 		this.ll.MoveToFront(ele)
-		node := ele.Value.(*node)
+		node := ele.Value.(*Node)
 		this.nowBytes += ncap - (int64(node.value.Len()) + int64(len(node.key)))
 		node.value = value
 	} else {
-		ele := this.ll.PushFront(&node{
+		ele := this.ll.PushFront(&Node{
 			key:   key,
 			value: value,
 		})
@@ -63,7 +63,7 @@ func (this *Cache) Put(key string, value Value) {
 func (this *Cache) Remove() {
 	tail := this.ll.Back()
 	if tail != nil {
-		node := tail.Value.(*node)
+		node := tail.Value.(*Node)
 		this.ll.Remove(tail)
 		delete(this.hashmap, node.key)
 		this.nowBytes -= int64(node.value.Len()) + int64(len(node.key))
