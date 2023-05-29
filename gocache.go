@@ -43,6 +43,7 @@ func NewGroup(name string, capacity int64, getter Getter) *Group {
 		},
 	}
 
+	groups[name] = temp
 	return temp
 }
 
