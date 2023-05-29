@@ -31,7 +31,7 @@ func New(capacity int64, OnEvicted func(string, Value)) *Cache {
 	}
 }
 
-func (this *Cache) Find(key string) (value Value, ok bool) {
+func (this *Cache) Get(key string) (value Value, ok bool) {
 	if ele, ok := this.hashmap[key]; ok {
 		this.ll.MoveToFront(ele)
 		v := ele.Value.(*Node)
